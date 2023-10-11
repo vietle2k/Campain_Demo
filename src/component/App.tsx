@@ -19,7 +19,6 @@ import {
 import TableAdvertisement from "./TableAdvertisement";
 import Checkbox from "@mui/material/Checkbox";
 import AddIcon from "@mui/icons-material/Add";
-import { createStyles, makeStyles, useTheme } from "@mui/styles";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 interface Campaign {
@@ -148,7 +147,16 @@ function App() {
         }}
       >
         <CardHeader
-          titleTypographyProps={{ fontSize: "18px" }}
+          titleTypographyProps={{
+            fontSize: "18px",
+            color:
+              campaign.errorSubCampaign ||
+              campaign.ads.filter(
+                (ad) => ad.errorAdsName || ad.errorAdsQuantity
+              ).length > 0
+                ? "red"
+                : "#000",
+          }}
           title={campaign.name}
           action={
             <IconButton
@@ -162,7 +170,7 @@ function App() {
         <CardContent sx={{ textAlign: "center", fontSize: "18px" }}>
           {campaign.quantity}
         </CardContent>
-        {/* Nội dung của mỗi Card */}
+      
       </Card>
     );
   };
@@ -260,7 +268,7 @@ function App() {
                   variant="standard"
                   value={campaign}
                   onChange={(e) => setCampaign(e.target.value)}
-                  error={campaignError} // Apply error style if there's an error
+                  error={campaignError} 
                   helperText={
                     campaignError ? "Vui lòng nhập tên chiến dịch" : ""
                   }

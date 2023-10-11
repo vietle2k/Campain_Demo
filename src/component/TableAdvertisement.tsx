@@ -1,31 +1,20 @@
 import React, { useState, useEffect } from "react";
 import "../App.css";
 import {
-  Box,
   Typography,
   Grid,
-  Chip,
-  Dialog,
   Button,
-  Divider,
-  Tab,
-  Tabs,
   TextField,
   IconButton,
-  Card,
-  CardHeader,
-  CardContent,
   Table,
   TableContainer,
   TableCell,
   TableBody,
   TableRow,
-  Paper,
   TableHead,
 } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 import AddIcon from "@mui/icons-material/Add";
-import { createStyles, makeStyles, useTheme } from "@mui/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 interface TableAdvertisementProps {
@@ -39,6 +28,7 @@ function TableAdvertisement(props: TableAdvertisementProps) {
   const [selectedAll, setSelectedAll] = useState<boolean>(false);
 
   useEffect(() => {
+ 
     setTableData(campainFocus.ads);
   }, [campainFocus]);
 
@@ -59,55 +49,28 @@ function TableAdvertisement(props: TableAdvertisementProps) {
     const updatedData = tableData.map((row: any) =>
       row.id === id ? { ...row, selected: !row.selected } : row
     );
-    setTableData(updatedData);
-  };
-
-  const handleSelectAll = () => {
-    // console.log("tableData", tableData);
-    // console.log("campainFocus", campainFocus);
-    let updatedData : any;
-    if (selectedAll) {
-      updatedData = campainFocus.ads.map((row: any) => ({
-        ...row,
-        selected: false,
-      }));
-    } else {
-      updatedData = campainFocus.ads.map((row: any) => ({
-        ...row,
-        selected: true,
-      }));
-    }
-    setCampainFocus((prev : any) => ({
+    setCampainFocus((prev: any) => ({
       ...prev,
       ads: updatedData,
     }));
-   
-    setSelectedAll((prev: any) => !prev);
-    // setSelectedAll((prev) => !prev);
   };
-  // const handleSelectAll = () => {
-  //   let updatedData
-  //   if(selectedAll){
-  //        updatedData = tableData.map((row: any) => ({
-  //           ...row,
-  //           selected: false,
-  //         }));
 
-  //   }else{
-  //        updatedData = tableData.map((row: any) => ({
-  //           ...row,
-  //           selected: true,
-  //         }));
-  //          }
-  //   setTableData(updatedData);
-  //   setSelectedAll((prev: any) => !prev);
-  //   console.log("tableData", tableData);
-  //    const updatedData = tableData.map((row: any) => ({
-  //     ...row,
-  //     selected: !selectedAll,
-  //  }));
-  //   setTableData(updatedData);
-  // };
+  const handleSelectAll = () => {
+    const areAllSelected = tableData.every((row: any) => row.selected);
+
+    const updatedData = tableData.map((row: any) => ({
+      ...row,
+      selected: !areAllSelected,
+    }));
+  
+    setCampainFocus((prev: any) => ({
+      ...prev,
+      ads: updatedData,
+    }));
+  
+    setSelectedAll(!areAllSelected);
+  };
+
   return (
     <Grid sx={{ display: "flex", width: "100%", flexDirection: "column" }}>
       <Typography
@@ -129,6 +92,7 @@ function TableAdvertisement(props: TableAdvertisementProps) {
                   color="primary"
                   checked={selectedAll}
                   onChange={handleSelectAll}
+                  indeterminate={selectedAll ? tableData.length > 0 && !tableData.every((row : any) => row.selected) : false}
                   inputProps={{
                     "aria-label": "select all desserts",
                   }}
@@ -144,10 +108,9 @@ function TableAdvertisement(props: TableAdvertisementProps) {
                   <IconButton aria-label="delete">
                     <DeleteIcon
                       onClick={() => {
-                        console.log('campainFocus', campainFocus);
                         setCampainFocus((prev: any) => {
                           const updatedAds = prev.ads.filter(
-                            (ad: any, index: any) => ad.selected === false
+                            (ad: any) => ad.selected === false
                           );
                           return { ...prev, ads: updatedAds };
                         });
